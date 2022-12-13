@@ -1,3 +1,4 @@
+from ast import literal_eval
 from functools import cmp_to_key
 import sys
 from pprint import pprint
@@ -8,7 +9,7 @@ def get_packet_pairs():
     packet_pairs = []
     for lines in open(sys.argv[1]).read().split("\n\n"):
         lp, rp = lines.splitlines()
-        packet_pairs.append((eval(lp), eval(rp)))
+        packet_pairs.append((literal_eval(lp), literal_eval(rp)))
     return packet_pairs
 
 
@@ -17,7 +18,7 @@ def get_packet_list():
     for line in open(sys.argv[1]):
         if not line.strip():
             continue
-        packets.append(eval(line.strip()))
+        packets.append(literal_eval(line.strip()))
     packets.append([[2]])
     packets.append([[6]])
     return packets
