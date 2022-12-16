@@ -91,3 +91,14 @@ but O(N^3) time is too much. :(
 
 Then, later in the evening, I realized that the shortest path in an unweighted
 graph is just a BFS. Doh.
+
+## 2022-12-16 ##
+
+Tough! Had to browse around a bit for hints to overcome my mental block on part
+one. I thought about generating permutations, but couldn't figure out how to
+prune the search space until I read about someone
+(https://www.reddit.com/user/Ill_Swimming4942/) that had the same idea and used
+the time limit to reduce the number of candidates.
+
+Part two was also hard, but got a pretty pleasing solution in the end. Runs in
+over two minutes, though.
