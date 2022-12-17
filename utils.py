@@ -1,3 +1,4 @@
+from collections import deque
 from functools import wraps
 import time
 
@@ -84,3 +85,19 @@ def dijkstra_with_bucket_queue(edges, size, src):
                 prev[v] = u
 
     return dist, prev
+
+
+def bfs_distance(adj, src):
+    # When adj is a dict of lists (nodes can be anything):
+    dist = {node: -1 for node in adj}
+    # When adj is a list of lists (nodes are int from 0 to len(adj)-1):
+    # dist = [-1 for node in range(len(adj))]
+    dist[src] = 0
+    queue = deque([src])
+    while queue:
+        u = queue.popleft()
+        for v in adj[u]:
+            if dist[v] < 0:
+                dist[v] = dist[u] + 1
+                queue.append(v)
+    return dist
