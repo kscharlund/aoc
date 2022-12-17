@@ -1,3 +1,4 @@
+from collections import Counter, defaultdict
 import sys
 from pprint import pprint
 import math
@@ -8,18 +9,18 @@ def get_data():
 
 
 ROCKS = [
-    [(0, 3)],
-    [(1, 1), (0, 2), (1, 1)],
-    [(0, 2), (2, 2), (2, 2)],
-    [(0, 0), (0, 0), (0, 0), (0, 0)],
-    [(0, 1), (0, 1)],
+    ((0, 3),),
+    ((1, 1), (0, 2), (1, 1)),
+    ((0, 2), (2, 2), (2, 2)),
+    ((0, 0), (0, 0), (0, 0), (0, 0)),
+    ((0, 1), (0, 1)),
 ]
 
 
 def repeat(seq):
     pos = 0
     while True:
-        yield seq[pos]
+        yield seq[pos], pos
         pos = (pos + 1) % len(seq)
 
 
@@ -44,83 +45,79 @@ def fall(x, y, rock, columns):
     return x, y - 1, False
 
 
+def height(columns):
+    return max(max(col) for col in columns)
+
+
 def a(data):
     columns = [{0} for _ in range(7)]
     rock_gen = repeat(ROCKS)
     push_gen = repeat(data)
     for _ in range(2022):
-        rock = next(rock_gen)
+        rock, _ = next(rock_gen)
         at_rest = False
-        x, y = 2, max(max(col) for col in columns) + 4
+        x, y = 2, height(columns) + 4
         while not at_rest:
-            x, y = push(x, y, rock, next(push_gen), columns)
+            dir, _ = next(push_gen)
+            x, y = push(x, y, rock, dir, columns)
             x, y, at_rest = fall(x, y, rock, columns)
             if at_rest:
                 for dy, (lo, ro) in enumerate(rock):
                     for dx in range(lo, ro + 1):
                         columns[x + dx].add(y + dy)
-    print(max(max(col) for col in columns))
+    print(height(columns))
 
 
 def b(data):
     columns = [{0} for _ in range(7)]
     rock_gen = repeat(ROCKS)
     push_gen = repeat(data)
-    floor_y = [0]
-    floor_r = [0]
     cycle_len = 0
-    for rock_n in range(500000):
+    rocks_before_cycle = 0
+    happenings = {}
+    for rock_n in range(15000):
         if cycle_len:
             break
-        rock = next(rock_gen)
+        rock, rt = next(rock_gen)
         at_rest = False
-        x, y = 2, max(max(col) for col in columns) + 4
+        x, y = 2, height(columns) + 4
         while not at_rest:
-            x, y = push(x, y, rock, next(push_gen), columns)
+            dir, dt = next(push_gen)
+            x, y = push(x, y, rock, dir, columns)
             x, y, at_rest = fall(x, y, rock, columns)
             if at_rest:
                 for dy, (lo, ro) in enumerate(rock):
                     for dx in range(lo, ro + 1):
                         columns[x + dx].add(y + dy)
-                    if all(y + dy in col for col in columns):
-                        print(f"Created a floor at {y+dy} with rock {rock_n+1}")
-                        floor_y.append(y + dy)
-                        floor_r.append(rock_n)
-                        for pcl in range(2, len(floor_y) // 2):
-                            yd = [y2 - y1 for y2, y1 in zip(floor_y[1:], floor_y[:-1])]
-                            c1 = [r for r in yd[-pcl:]]
-                            c2 = [r for r in yd[-(2 * pcl) : -pcl]]
-                            if c1 == c2:
-                                cycle_len = len(c1)
-                                break
+                if (rt, dt, x) in happenings:
+                    rocks_before_cycle, height_before_cycle = happenings[(rt, dt, x)]
+                    cycle_len = rock_n - rocks_before_cycle
+                    cycle_height = height(columns) - height_before_cycle
+                else:
+                    happenings[(rt, dt, x)] = (rock_n, height(columns))
 
-    rocks_before_cycle = floor_r[-2 * (cycle_len + 1)]
-    rows_before_cycle = floor_y[-2 * (cycle_len + 1)]
-    print(f"{rocks_before_cycle=}, {rows_before_cycle=}")
-    rocks_in_cycle = floor_r[-1] - floor_r[-cycle_len - 1]
-    rows_in_cycle = floor_y[-1] - floor_y[-cycle_len - 1]
-    print(f"{rocks_in_cycle=}, {rows_in_cycle=}")
-    full_iters = (1000000000000 - rocks_before_cycle) // rocks_in_cycle
-    remaining_rocks = 1000000000000 - full_iters * rocks_in_cycle
-    print(remaining_rocks)
+    full_iters = (1000000000000 - rocks_before_cycle) // cycle_len
+    remaining_rocks = 1000000000000 - full_iters * cycle_len
+    print(f"{rocks_before_cycle=}, {cycle_len=}, {cycle_height=}, {remaining_rocks=}")
 
     columns = [{0} for _ in range(7)]
     rock_gen = repeat(ROCKS)
     push_gen = repeat(data)
     for rock_n in range(remaining_rocks):
-        rock = next(rock_gen)
+        rock, _ = next(rock_gen)
         at_rest = False
-        x, y = 2, max(max(col) for col in columns) + 4
+        x, y = 2, height(columns) + 4
         while not at_rest:
-            x, y = push(x, y, rock, next(push_gen), columns)
+            dir, _ = next(push_gen)
+            x, y = push(x, y, rock, dir, columns)
             x, y, at_rest = fall(x, y, rock, columns)
             if at_rest:
                 for dy, (lo, ro) in enumerate(rock):
                     for dx in range(lo, ro + 1):
                         columns[x + dx].add(y + dy)
-    rows = max(max(col) for col in columns)
+    rows = height(columns)
 
-    print(rows + full_iters * rows_in_cycle)
+    print(rows + full_iters * cycle_height)
 
 
 def main():
