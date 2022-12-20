@@ -4,18 +4,34 @@ from pprint import pprint
 import math
 
 
+MAX_Z, MAX_Y, MAX_X = 0, 0, 0
+
+
 def get_data():
-    return {tuple(int(c) for c in line.split(",")) for line in open(sys.argv[1])}
+    global MAX_Z, MAX_Y, MAX_X
+    points = {tuple(int(c) for c in line.split(",")) for line in open(sys.argv[1])}
+    MAX_Z, MAX_Y, MAX_X = (
+        max(z for z, y, x in points),
+        max(y for z, y, x in points),
+        max(x for z, y, x in points),
+    )
+    return points
 
 
 def neighbors(point):
     z, y, x = point
-    yield (z - 1, y, x)
-    yield (z + 1, y, x)
-    yield (z, y - 1, x)
-    yield (z, y + 1, x)
-    yield (z, y, x - 1)
-    yield (z, y, x + 1)
+    if z >= 0:
+        yield (z - 1, y, x)
+    if z <= MAX_Z:
+        yield (z + 1, y, x)
+    if y >= 0:
+        yield (z, y - 1, x)
+    if y <= MAX_Y:
+        yield (z, y + 1, x)
+    if x >= 0:
+        yield (z, y, x - 1)
+    if x <= MAX_X:
+        yield (z, y, x + 1)
 
 
 def a(data):
@@ -61,8 +77,30 @@ def flood_fill_all_internal(data):
                 flood_fill_internal(data, p)
 
 
+def find_outside(data):
+    src = (-1, -1, -1)
+    assert src not in data
+    queue = deque([src])
+    outside = set()
+    outside.add(src)
+    while queue:
+        u = queue.popleft()
+        for v in neighbors(u):
+            if v not in data and v not in outside:
+                outside.add(v)
+                queue.append(v)
+    return outside
+
+
 def b(data):
-    flood_fill_all_internal(data)
+    outside = find_outside(data)
+    not_inside = outside | data
+    for z in range(MAX_Z + 1):
+        for y in range(MAX_Y + 1):
+            for x in range(MAX_X + 1):
+                p = (z, y, x)
+                if p not in not_inside:
+                    data.add(p)
 
     # max_z, max_y, max_x = (
     #     max(z for z, y, x in data),
