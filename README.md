@@ -102,3 +102,9 @@ the time limit to reduce the number of candidates.
 
 Part two was also hard, but got a pretty pleasing solution in the end. Runs in
 over two minutes, though.
+
+## 2022-12-19 ##
+
+Incredibly messy and ad-hoc. Close to giving up the entire season. A well-placed
+hint from Henrik and some questionable code to reduce memory usage finally
+cracked part two.
