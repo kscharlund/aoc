@@ -108,3 +108,8 @@ over two minutes, though.
 Incredibly messy and ad-hoc. Close to giving up the entire season. A well-placed
 hint from Henrik and some questionable code to reduce memory usage finally
 cracked part two.
+
+## 2022-12-21 ##
+
+Part one straightforward, took me quite a while to figure out the right
+approach for part two. Was trying more symbolic approaches first.
