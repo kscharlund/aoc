@@ -1,4 +1,4 @@
-from collections import defaultdict, deque
+from collections import deque
 import sys
 from pprint import pprint
 import math
@@ -27,15 +27,12 @@ def get_data():
 
 def is_free(pos, t, blizzards):
     y, x = pos
-    if ((y - t) % y_size, x) in blizzards["v"]:
-        return False
-    if ((y + t) % y_size, x) in blizzards["^"]:
-        return False
-    if (y, (x - t) % x_size) in blizzards[">"]:
-        return False
-    if (y, (x + t) % x_size) in blizzards["<"]:
-        return False
-    return True
+    return not (
+        ((y - t) % y_size, x) in blizzards["v"]
+        or ((y + t) % y_size, x) in blizzards["^"]
+        or (y, (x - t) % x_size) in blizzards[">"]
+        or (y, (x + t) % x_size) in blizzards["<"]
+    )
 
 
 def within_bounds(pos, src, dst):
@@ -45,16 +42,12 @@ def within_bounds(pos, src, dst):
 
 def adj(pos, t, src, dst, blizzards):
     y, x = pos
-    for dy in (1, -1, 0):
-        for dx in (1, -1, 0):
-            n_pos = (y + dy, x + dx)
-            if not (dy and dx):
-                if n_pos == src and pos != src:
-                    continue
-                free = is_free(n_pos, t + 1, blizzards)
-                bds = within_bounds(n_pos, src, dst)
-                if free and bds:
-                    yield n_pos
+    for dy, dx in [(1, 0), (0, 1), (0, 0), (-1, 0), (0, -1)]:
+        n_pos = (y + dy, x + dx)
+        free = is_free(n_pos, t + 1, blizzards)
+        bds = within_bounds(n_pos, src, dst)
+        if free and bds:
+            yield n_pos
 
 
 def bfs_distance(src, dst, blizzards, t0=0):
