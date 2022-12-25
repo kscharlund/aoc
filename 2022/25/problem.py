@@ -27,19 +27,11 @@ def from_snafu(line):
 
 
 def to_snafu(val):
-    l5 = math.floor(math.log(val, 5))
     res = ""
-    snafu_sum = 0
-    if val / 5**l5 >= 2.5:
-        # TODO: if val / 5**l5 == 2.5 due to float precision, need to handle.
-        res = "1"
-        snafu_sum = 5 ** (l5 + 1)
-    for i in range(l5, -1, -1):
-        rem = val - snafu_sum
-        dig = round(rem / 5**i)
-        res += TO_SNAFU_MAP[dig]
-        snafu_sum += dig * 5**i
-        # print(val, snafu_sum, res, rem / 5**i)
+    while val > 0:
+        val, dig = divmod(val, 5)
+        res = "012=-"[dig] + res
+        val += dig > 2
     return res
 
 

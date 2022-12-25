@@ -113,3 +113,8 @@ cracked part two.
 
 Part one straightforward, took me quite a while to figure out the right
 approach for part two. Was trying more symbolic approaches first.
+
+## 2022-12-25 ##
+
+Pretty simple but still nice. [Emil's](https://github.com/estyrke) solution
+was so much better than mine that I updated my code afterwards to look like his.
