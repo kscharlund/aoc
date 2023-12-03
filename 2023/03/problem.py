@@ -62,7 +62,7 @@ def adjacent_numbers(grid, row, col):
             t = (row + dy, col + dx)
             if t in grid and grid[t][0] == "n":
                 number_indices.add(grid[t][1])
-    return sorted(number_indices)
+    return number_indices
 
 
 def b(data):
@@ -73,7 +73,7 @@ def b(data):
             continue
         number_indices = adjacent_numbers(grid, row, col)
         if len(number_indices) == 2:
-            res += numbers[number_indices[0]][0] * numbers[number_indices[1]][0]
+            res += math.prod(numbers[i][0] for i in number_indices)
     print(res)
 
 
