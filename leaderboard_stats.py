@@ -35,7 +35,7 @@ def main():
         print(f"{user_name} ({num_stars} stars, {local_score} local points)")
         for problem, timestamps in problems.items():
             cet = timezone(timedelta(hours=1))
-            problem_open = datetime(2022, 12, problem, 6, 0, 0, tzinfo=cet)
+            problem_open = datetime(2023, 12, problem, 6, 0, 0, tzinfo=cet)
             first_star = datetime.fromtimestamp(timestamps[0], tz=cet)
             to_first = first_star - problem_open
 
@@ -82,10 +82,10 @@ def main():
         print()
 
     print(
-        f"Fastest first star: 2020-12-{fastest_first_star[1]:02} in {fastest_first_star[0]} by {fastest_first_star[2]}"
+        f"Fastest first star: 2023-12-{fastest_first_star[1]:02} in {fastest_first_star[0]} by {fastest_first_star[2]}"
     )
     print(
-        f"Fastest second star: 2020-12-{fastest_second_star[1]:02} in {fastest_second_star[0]} by {fastest_second_star[2]}"
+        f"Fastest second star: 2023-12-{fastest_second_star[1]:02} in {fastest_second_star[0]} by {fastest_second_star[2]}"
     )
 
 
