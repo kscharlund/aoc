@@ -118,3 +118,9 @@ approach for part two. Was trying more symbolic approaches first.
 
 Pretty simple but still nice. [Emil's](https://github.com/estyrke) solution
 was so much better than mine that I updated my code afterwards to look like his.
+
+## 2023-12-18 ##
+
+Wrote lots of hacky and messy code until a colleague mentioned the [shoelace
+formula](https://en.wikipedia.org/wiki/Shoelace_formula). Hadn't heard of it
+before, very nice.
